@@ -1,0 +1,13 @@
+name = "BLG_SQUID"
+uuid = "80629c79-3a34-44dd-af93-51cfd4866ffe"
+authors = ["Fernando Peñaranda"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
