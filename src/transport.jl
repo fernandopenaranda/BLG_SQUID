@@ -38,8 +38,8 @@ computes the Ic_optim = max(Ic, ϕ) using a ML K-cross validation search algorit
 minimum. See: `adaptive_max_finder.jl`
 """
 function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
-    icmax = similar(Bperplist)
-  for i in 1:length(Bperplist) #  @sync @distributed 
+    icmax = SharedArray(similar(Bperplist))
+    @sync @distributed for i in 1:length(Bperplist) 
         hpar = 
             rectangle_weaklink(reconstruct(p, U = Bperplist[i], B = SA[0,0, Bperplist[i]]), false)
 
