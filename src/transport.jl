@@ -14,6 +14,12 @@ function fraunhofer_abs_exact(Bperp::Array{T,1}, p,
     return Bperp, icmax, ic
 end
 
+
+function fraunhofer_abs_exact_adaptive(Bperplist, p; kw...)
+    icmax = maxicϕ_exactdiag(Bperplist, p; kw...) 
+    return Bperp, icmax
+end
+
 """
     `icϕ_exactdiag(Bperplist::Array{T,1}, p, Δϕ::Union{Array{T,1}, Missing}; kw...)`
 supercurrent sweep with both Bperp and Δϕ. See: `supercurrent_exactdiag()`
@@ -33,7 +39,7 @@ minimum. See: `adaptive_max_finder.jl`
 """
 function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
     icmax = SharedArray(similar(Bperplist))
-    @sync @distributed for i in 1:length(Bperplist) 
+  for i in 1:length(Bperplist) #  @sync @distributed 
         hpar = 
             rectangle_weaklink(reconstruct(p, U = Bperplist[i], B = SA[0,0, Bperplist[i]]), false)
 

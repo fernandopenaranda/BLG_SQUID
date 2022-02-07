@@ -1,6 +1,6 @@
 using Distributed 
 addprocs(2)
-@everywhere using MBSinBLG
+@everywhere using BLG_SQUID
 # using MKL
 # BLAS.set_num_threads(2)
 @everywhere using MKL, SharedArrays
@@ -10,7 +10,7 @@ addprocs(2)
 @everywhere using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 
 
-using MBSinBLG, Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase, SharedArrays
+using BLG_SQUID, MKL, Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase, SharedArrays
 using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
 using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 using Optim, ProgressMeter

@@ -21,7 +21,7 @@ module BLG_SQUID
     export Params
     export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params,  modelS, rectangle_weaklink, 
         rectangle_randombounds_sc, ldosonlattice_averaged_sc, ldosonlattice
-    export icϕ_exactdiag, fraunhofer_abs_exact, maxicϕ_exactdiag
+    export icϕ_exactdiag, fraunhofer_abs_exact, maxicϕ_exactdiag, fraunhofer_abs_exact_adaptive
 
     include("model.jl")
     include("nanoribbon.jl")

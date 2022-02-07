@@ -19,8 +19,8 @@ maxicϕ_exactdiag(Blist, p)
 
 #####
 
-# p1 = Params(Ln =50, W = 50, Ls = 3, Ws = 3, scale = 40, λ = 5,
-#           Δ = 1, d = 0, τ = 1, B = SA[0,0,.0], EZ = SA[0,0,0], μN = 1e-6);
+p1 = Params(Ln =50, W = 50, Ls = 3, Ws = 3, scale = 40, λ = 5,
+          Δ = 1, d = 0, τ = 1, B = SA[0,0,.0], EZ = SA[0,0,0], μN = 1e-6);
 # ph1 = rectangle_weaklink(p1, false);
 
 
