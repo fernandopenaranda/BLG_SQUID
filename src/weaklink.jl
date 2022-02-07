@@ -13,7 +13,7 @@ function rectangle_weaklink(p, selfy = true)
     # PEIERLS PHASES
     diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
     piecewise(y) = clamp(y, -W/2, W/2) # clamp(x, -Ln/2 - a0/(2*√3) , Ln/2 + a0/(2*√3)))
-    A(r, B) = B/ħoec * piecewise(r[2])
+    A(r, B) = [-B[3]/ħoec, 0, 0] * piecewise(r[2])
     eφ(r, dr, B) = diagphi(dot(A(r, B), dr))
     peierls! =@hopping!((t, r, dr) -> t * eφ(r, dr, B))
     
