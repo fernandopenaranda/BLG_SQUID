@@ -41,7 +41,7 @@ function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
     icmax = SharedArray(similar(Bperplist))
     @sync @distributed for i in 1:length(Bperplist) 
         hpar = 
-            rectangle_weaklink(reconstruct(p, U = Bperplist[i], B = SA[0,0, Bperplist[i]]), false)
+            rectangle_weaklink(reconstruct(p, B = SA[0,0, Bperplist[i]]), false)
 
         gen_model(x::Array, hp; kw...) = 
             supercurrent_exactdiag_adaptive(x, hp; kw...)  #not sure if p is being updated as it should
