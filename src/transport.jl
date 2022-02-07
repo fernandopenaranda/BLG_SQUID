@@ -34,13 +34,15 @@ minimum. See: `adaptive_max_finder.jl`
 function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
     icmax = SharedArray(similar(Bperplist))
     @sync @distributed for i in 1:length(Bperplist) 
-        hpar = rectangle_weaklink(reconstruct(p, B = SA[0,0, Bperplist[i]]), false)
-        gen_model(x::Array; kw...) = 
-            supercurrent_exactdiag_adaptive(x, hpar::Quantica.ParametricHamiltonian; kw...)  #not sure if p is being updated as it should
-        gen_model(x::Array, f::Array, xmax::Number; kw...) = 
-            supercurrent_exactdiag_adaptive(x, f, xmax, hpar; kw...)
+        hpar = 
+            rectangle_weaklink(reconstruct(p, U = Bperplist[i], B = SA[0,0, Bperplist[i]]), false)
+
+        gen_model(x::Array, hp; kw...) = 
+            supercurrent_exactdiag_adaptive(x, hp; kw...)  #not sure if p is being updated as it should
+        gen_model(x::Array, f::Array, xmax::Number, hp; kw...) = 
+            supercurrent_exactdiag_adaptive(x, f, xmax, hp; kw...)
         
-        icmax[i] = adaptive_max_finder(gen_model, fourier_model; kw)[1]
+        icmax[i] = adaptive_max_finder(gen_model, fourier_model, hpar; kw)[1]
     end
     return icmax 
 end
@@ -113,7 +115,7 @@ calculation an adaptive procedure for setting the number of nevs calculated with
 invert method
 """
 function negative_eigen(hpar, Δϕ)
-    sp = spectrum(hpar(ϕ = Δϕ), method = ArpackPackage(nev = 16,sigma = -0.001im))
+    sp = spectrum(hpar(ϕ = Δϕ), method = ArpackPackage(nev = 104, sigma = -0.001im))
     # sp = DACPdiagonaliser(hpar(ϕ = Δϕ), 0.1)
     λ = real(sp.energies)
     λneg = λ[λ.<=0];

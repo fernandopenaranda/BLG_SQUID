@@ -17,12 +17,13 @@
 range (-π, π) using an adaptive algorithm based on numerical optimization of  K-cross validated fits
 which guide adaptively the minima value search. `tolerance` sets when the algorithm should stop searching maximums. `max_iter` sets an upper limit for 
 maximal search. It is important to use an initial discrete xmesh that uses the 2pi periodicity to guide the fit"
-function adaptive_max_finder(generating_func::Function, model; tolerance = 1e-4, max_iter = 10, kw...) 
+function adaptive_max_finder(generating_func::Function, model, hp; tolerance = 1e-4, max_iter = 10, kw...) 
     println("adaptive algorithm")
     # xinit = collect(-1:0.1:1)
     # xinit = 2 .* rand(5) .- 1ß 
-    xinit = collect(-0.5:.5:π+0.5)+ (2 .* rand(9) .- 1)./20#collect(-1:0.25:1) + (2 .* rand(9) .- 1)./10
-    xinit, finit, yinit, fitparams = generate_and_fit(xinit, model, generating_func; kw...)
+    #xinit = collect(-0.5:.5:π+0.5)+ (2 .* rand(9) .- 1)./20#collect(-1:0.25:1) + (2 .* rand(9) .- 1)./10
+    xinit = collect(-π:π/8:π+π/4)
+    xinit, finit, yinit, fitparams = generate_and_fit(xinit, model, generating_func, hp; kw...)
         # cpr_plot(xinit, yinit, model, fitparams)
     bounds = (minimum(xinit), maximum(xinit))
     xmax = minima_search(model, fitparams, bounds)
@@ -36,7 +37,7 @@ function adaptive_max_finder(generating_func::Function, model; tolerance = 1e-4,
         # println("error:", abs(xmax0-xmax))
         err_old = abs(xmax0-xmax)
         xmax0 = xmax
-        x, f, y, ymax, fitparams = generate_and_fit(xmax, x, f, y, model, generating_func; kw...)
+        x, f, y, ymax, fitparams = generate_and_fit(xmax, x, f, y, model, generating_func, hp; kw...)
             # cpr_plot(x, y, model, fitparams)
         bounds = (minimum(x), maximum(x))
         xmax = minima_search(model, fitparams, bounds)
@@ -55,15 +56,15 @@ function adaptive_max_finder(generating_func::Function, model; tolerance = 1e-4,
 
 end
 "generate a new data point using a given `model` and an `x` value"
-function generate_and_fit(x::Array, model, generating_func; kw...)
-    x, f, y = generating_func(x; kw...)
+function generate_and_fit(x::Array, model, generating_func, hp; kw...)
+    x, f, y = generating_func(x, hp; kw...)
     # xmean = [x[i]/2+x[i+1]/2 for i in 1:length(x)-1]
     fitparams = msqerror(x, y, model) 
     return x, f, y, fitparams
 end
 
-function generate_and_fit(x::Number, xlist, flist, ylist, model, generating_func; kw...)
-    f, y = generating_func(xlist, flist, x; kw...)
+function generate_and_fit(x::Number, xlist, flist, ylist, model, generating_func, hp; kw...)
+    f, y = generating_func(xlist, flist, x, hp; kw...)
     push!(xlist, x)
     push!(flist, f)
     push!(ylist, y)

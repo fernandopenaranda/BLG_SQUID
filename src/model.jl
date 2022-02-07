@@ -167,7 +167,7 @@ function modelS(p = Params())
             sublats = (:At=>:Bt, :Bt=>:At, :A=>:B, :B=>:A)) -
         hopping((r,dr) -> hopR(α, dr), range = a0/√3, sublats = (:Ab=>:Bb, :Bb=>:Ab))
 
-    modelonsiteN = onsite(-μN * σ0τz + EZ' * SA[σxτz, σyτ0, σzτz])
+    modelonsiteN = onsite(r -> (-μN + U/2 * sign(r[3])) * σ0τz + EZ' * SA[σxτz, σyτ0, σzτz])
 
     model0 = modelonsiteN + modelintra + modelinter + modelIsing + 
         modelKaneMele + modelRashba
