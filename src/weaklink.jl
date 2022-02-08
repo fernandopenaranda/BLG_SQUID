@@ -4,6 +4,8 @@ the AC edges. There is a different phase difference between left and right sides
 weak link (-ϕ/2 for x<0 ϕ/2 for x>0).
 Neither smoothness nor leads are implemented. Also disorder and rotation are not considered.
 """
+#mask == false ?  devicereg = reg : devicereg = xor(reg, 
+    #RegionPresets.rectangle((Ln-2*Δx_mask, W-2*Δy_mask), (0., W/2 + a0 *scale)))
 function rectangle_weaklink(p, selfy = true)
     (; Ls, Δ, Ws, B, Ln, W) = p
     (; model0, field!, modelinter) = modelS(p)
@@ -24,8 +26,8 @@ function rectangle_weaklink(p, selfy = true)
         !(xmin+Ls <= r[1] <= xmax - Ls) || !(ymin+Ws <= r[2] <= ymax - Ws))
 
     sCself! = @onsite!((o, r; ϕ) -> o + self_region(r) * Δ *
-        eφ(r, r+[0,-W/2,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
-            diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,-W/2,0], B)')
+        eφ(r, r+[0,0,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
+            diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
               
     # HAMILTONIAN BUILD
     h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> 
