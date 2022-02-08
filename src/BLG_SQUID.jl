@@ -10,7 +10,7 @@ module BLG_SQUID
         end
         end
     end
-
+    println("check")
     using SharedArrays, Distributed
     using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
     using Baselet, Arpack, CSV, DataFrames, Dates
