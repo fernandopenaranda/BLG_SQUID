@@ -11,7 +11,7 @@ function rectangle_weaklink(p, selfy = true)
     (; model0, field!, modelinter) = modelS(p)
     lat_top, lat_bot = latBLG(p, 0) #0 angle rotation
     
-    println("Flux: ",B[3]*Ln*W/Φ0)
+    println("flux: ",B[3]*Ln*W/Φ0)
     # PEIERLS PHASES
     diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
     piecewise(y) = clamp(y, -W/2, W/2) # clamp(x, -Ln/2 - a0/(2*√3) , Ln/2 + a0/(2*√3)))
