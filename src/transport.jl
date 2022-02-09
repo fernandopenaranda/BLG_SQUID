@@ -121,7 +121,7 @@ calculation an adaptive procedure for setting the number of nevs calculated with
 invert method
 """
 function negative_eigen(hpar, Δϕ)
-    sp = spectrum(hpar(ϕ = Δϕ))#, method = ArpackPackage(nev = 32, sigma = -0.001im)) #104
+    sp = spectrum(hpar(ϕ = Δϕ), method = ArpackPackage(nev = 64)) #104 sigma = -0.001im
     # sp = DACPdiagonaliser(hpar(ϕ = Δϕ), 0.1)
     λ = real(sp.energies)
     λneg = λ[λ.<=0];

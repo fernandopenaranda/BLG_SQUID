@@ -4,13 +4,12 @@ the AC edges. There is a different phase difference between left and right sides
 weak link (-ϕ/2 for x<0 ϕ/2 for x>0).
 Neither smoothness nor leads are implemented. Also disorder and rotation are not considered.
 """
-#mask == false ?  devicereg = reg : devicereg = xor(reg, 
-    #RegionPresets.rectangle((Ln-2*Δx_mask, W-2*Δy_mask), (0., W/2 + a0 *scale)))
-function rectangle_weaklink(p, selfy = true)
+
+function rectangle_weaklink(p, selfy = true, hole = false; Δx_mask = 0, Δy_mask = 0)
     (; Ls, Δ, Ws, B, Ln, W) = p
     (; model0, field!, modelinter) = modelS(p)
-    lat_top, lat_bot = latBLG(p, 0) #0 angle rotation
-    
+    lat_top, lat_bot = latBLG(p, mask = hole, Δx_mask = Δx_mask, Δy_mask = Δx_mask) #0 angle rotation
+    #old lat_top, lat_bot = latBLG(p,0)
     println("flux: ",B[3]*Ln*W/Φ0)
     # PEIERLS PHASES
     diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
@@ -18,7 +17,7 @@ function rectangle_weaklink(p, selfy = true)
     A(r, B) = [-B[3]/ħoec, 0, 0] * piecewise(r[2])
     eφ(r, dr, B) = diagphi(dot(A(r, B), dr))
     peierls! =@hopping!((t, r, dr) -> t * eφ(r, dr, B))
-    
+
     # LOCAL SELF-ENERGY MODEL
     xmin, xmax = extrema(r->r[1], sitepositions(Quantica.combine(lat_top, lat_bot)))
     ymin, ymax = extrema(r->r[2], sitepositions(Quantica.combine(lat_top, lat_bot)))
@@ -28,7 +27,7 @@ function rectangle_weaklink(p, selfy = true)
     sCself! = @onsite!((o, r; ϕ) -> o + self_region(r) * Δ *
         eφ(r, r+[0,0,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
             diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
-              
+
     # HAMILTONIAN BUILD
     h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> 
         unitcell(mincoordination = 5)    
@@ -53,4 +52,10 @@ function spectrumvsphase(philist, p; nev = 16, kw...)
         elist[:,i] = s.energies
     end
     return philist, elist
+end
+
+"flux test"
+function quantumflux(p)
+    (; Ls, Δ, Ws, B, Ln, W) = p
+    println("Set Bz to: ",Φ0/(Ln*W))
 end

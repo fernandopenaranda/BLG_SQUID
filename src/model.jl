@@ -74,7 +74,7 @@ creates an unbounded lattice for the BLG in Bernal stacking with bravais vectors
 θ degrees wrt latBLG_unbounded(::Params()).
     see: latBLG_unbounded(::Params()), Params()
 """
-function latBLG(p, θ)
+function latBLG(p, θ; mask = true, Δx_mask = 10,  Δy_mask = 40)
     (; a0, dinter, Ln, W) = p
     lat0_slg = LP.honeycomb(; a0, dim = 3)
     function rotated_region(r)
@@ -91,6 +91,28 @@ function latBLG(p, θ)
         SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * SA[0, 0.5*a0/sqrt(3.0), dinter/2], 
         copy(lat_slg)); names = (:At, :Bt), type = Float64)
     return lat_top, lat_bot
+end
+
+"""
+    latBLG(p)
+creates an unbounded lattice for the BLG in Bernal stacking with bravais vectors rotated by
+θ degrees wrt latBLG_unbounded(::Params()).
+    see: latBLG_unbounded(::Params()), Params()
+"""
+
+function latBLG(p; mask = true, Δx_mask = 0,  Δy_mask = 0)
+    (; a0, dinter, Ln, W) = p
+    lat0_slg = LP.honeycomb(; a0, dim = 3)
+
+    
+    mask_reg = Quantica.RegionPresets.Region{3}(r -> xor(abs(r[1]) ≤ Ln/2 &&
+     abs(r[2]) ≤ W/2, abs(r[1]) ≤ Ln/2 -Δx_mask && abs(r[2]) ≤ W/2-Δy_mask))
+    lat_slg = unitcell(lat0_slg, region = mask_reg)
+    lat_bot = lattice(Quantica.transform!(r -> r + SA[0, -0.5*a0/sqrt(3.0), -dinter/2], 
+    copy(lat_slg)); names = (:Ab, :Bb), type = Float64)
+    lat_top = lattice(Quantica.transform!(r -> r +  SA[0, 0.5*a0/sqrt(3.0), dinter/2], 
+    copy(lat_slg)); names = (:At, :Bt), type = Float64)
+return lat_top, lat_bot
 end
 
 latSLG(p = Params()) = LP.honeycomb(; a0 = p.a0, dim = Val(3))
