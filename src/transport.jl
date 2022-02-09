@@ -37,11 +37,12 @@ end
 computes the Ic_optim = max(Ic, ϕ) using a ML K-cross validation search algorithm for the 
 minimum. See: `adaptive_max_finder.jl`
 """
-function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
+function maxicϕ_exactdiag(Bperplist::Array{T,1}, p; mask = true, Δx_mask = 20, Δy_mask = 20,
+    kw...) where {T}
     icmax = SharedArray(similar(Bperplist))
     @sync @distributed for i in 1:length(Bperplist) 
-        hpar = 
-            rectangle_weaklink(reconstruct(p, B = SA[0,0, Bperplist[i]]), false)
+        hpar = rectangle_weaklink(reconstruct(p, B = SA[0,0, Bperplist[i]]), 
+            false, mask, Δx_mask = Δx_mask, Δy_mask = Δy_mask)
 
         gen_model(x::Array, hp; kw...) = 
             supercurrent_exactdiag_adaptive(x, hp; kw...)  #not sure if p is being updated as it should
