@@ -8,9 +8,9 @@ Neither smoothness nor leads are implemented. Also disorder and rotation are not
 function rectangle_weaklink(p, selfy = true, hole = false; Δx_mask = 0, Δy_mask = 0)
     (; Ls, Δ, Ws, B, Ln, W) = p
     (; model0, field!, modelinter) = modelS(p)
-    lat_top, lat_bot = latBLG(p, mask = hole, Δx_mask = Δx_mask, Δy_mask = Δx_mask) #0 angle rotation
+    lat_top, lat_bot = latBLG(p, mask = hole, Δx_mask = Δx_mask, Δy_mask = Δy_mask) #0 angle rotation
     #old lat_top, lat_bot = latBLG(p,0)
-    println("flux: ",B[3]*Ln*W/Φ0)
+    println("Flux: ",B[3]*Ln*W/Φ0)
     # PEIERLS PHASES
     diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
     piecewise(y) = clamp(y, -W/2, W/2) # clamp(x, -Ln/2 - a0/(2*√3) , Ln/2 + a0/(2*√3)))
@@ -58,4 +58,5 @@ end
 function quantumflux(p)
     (; Ls, Δ, Ws, B, Ln, W) = p
     println("Set Bz to: ",Φ0/(Ln*W))
+    return Φ0/(Ln*W)
 end

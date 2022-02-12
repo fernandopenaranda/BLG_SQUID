@@ -14,3 +14,5 @@ using BLG_SQUID, MKL, Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBa
 using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
 using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 using Optim, ProgressMeter
+
+using ElectronDisplay, VegaLite, CairoMakie

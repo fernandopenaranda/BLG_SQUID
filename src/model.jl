@@ -104,7 +104,6 @@ function latBLG(p; mask = true, Δx_mask = 0,  Δy_mask = 0)
     (; a0, dinter, Ln, W) = p
     lat0_slg = LP.honeycomb(; a0, dim = 3)
 
-    
     mask_reg = Quantica.RegionPresets.Region{3}(r -> xor(abs(r[1]) ≤ Ln/2 &&
      abs(r[2]) ≤ W/2, abs(r[1]) ≤ Ln/2 -Δx_mask && abs(r[2]) ≤ W/2-Δy_mask))
     lat_slg = unitcell(lat0_slg, region = mask_reg)
@@ -148,7 +147,7 @@ function modelN(p = Params())
             sublats = (:At=>:Bt, :Bt=>:At, :A=>:B, :B=>:A)) -
         hopping((r,dr) -> hopR(α, dr), range = a0/√3, sublats = (:Ab=>:Bb, :Bb=>:Ab))
 
-    modelonsiteN = onsite(-μN * σ0 + EZ'*SA[σx, σy, σz])
+    modelonsiteN = onsite(r -> (-μN + U/2 * sign(r[3])) * σ0 + EZ' * SA[σx, σy, σz])
 
     model0 = modelonsiteN + modelintra + modelinter + modelIsing + 
         modelKaneMele + modelRashba
