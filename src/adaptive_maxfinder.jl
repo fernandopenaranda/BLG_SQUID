@@ -22,7 +22,7 @@ function adaptive_max_finder(generating_func::Function, model, hp; tolerance = 1
     # xinit = collect(-1:0.1:1)
     # xinit = 2 .* rand(5) .- 1ß 
     #xinit = collect(-0.5:.5:π+0.5)+ (2 .* rand(9) .- 1)./20#collect(-1:0.25:1) + (2 .* rand(9) .- 1)./10
-    xinit = collect(-π:π/8:π+π/4)
+    xinit = collect(-π:π/4:π+π/4)#collect(-π:π/8:π+π/4)
     xinit, finit, yinit, fitparams = generate_and_fit(xinit, model, generating_func, hp; kw...)
         # cpr_plot(xinit, yinit, model, fitparams)
     bounds = (minimum(xinit), maximum(xinit))
@@ -81,7 +81,7 @@ end
 "This function computes the optimal fitting parameters for a given dataset consisting in a 
 truncated up to `custom_max_order` Fourier expansion, it performs a K-cross validation 
 analysis as well, to prevent overfitting (ML algorithm)"
-function msqerror(xdata, ydata, model; K = 2, custom_max_order = missing, train_tol = 1e-3)
+function msqerror(xdata, ydata, model; K = 1, custom_max_order = missing, train_tol = 1e-3)
     custom_max_order === missing ? max_order = Int64(floor(length(xdata)/2)) : 
         max_order = custom_max_order
     # data partition controlled by data availability 
