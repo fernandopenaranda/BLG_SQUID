@@ -37,9 +37,9 @@ function rectangle_weaklink(p, selfy = true, hole = false; Δx_mask = 0, Δy_mas
         !(xmin+Ls <= r[1] <= xmax - Ls) || !(ymin+Ws <= r[2] <= ymax - Ws))
 
     sCself! = @onsite!((o, r; ϕ) -> o + self_region(r) * Δ *
-        eφ(r, r+ifelse(sign(r[1]<0, [-Ln+Ls,-W/2,0], [Ln-Ls,-W/2,0]), B) *
+        eφ(r, r + ifelse(sign(r[1])<0, [-Ln+Ls,-W/2,0], [Ln-Ls,-W/2,0]), B) *
         diagphi(sign(r[1])* ϕ/4) * σyτy * 
-            diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
+            diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+ifelse(sign(r[1])<0, [-Ln+Ls,-W/2,0], [Ln-Ls,-W/2,0]), B)')
         # eφ(r, r+ifelse(sign(r[1][0,0,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
         #     diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
 
