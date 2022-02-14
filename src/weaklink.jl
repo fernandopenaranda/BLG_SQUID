@@ -12,11 +12,23 @@ function rectangle_weaklink(p, selfy = true, hole = false; Δx_mask = 0, Δy_mas
     #old lat_top, lat_bot = latBLG(p,0)
     println("Flux: ",B[3]*Ln*W/Φ0)
     # PEIERLS PHASES
+    #model paper the phase at the sc contacts is not correctly defined
+    # diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
+    # piecewise(y) = clamp(y, -W/2, W/2) # clamp(x, -Ln/2 - a0/(2*√3) , Ln/2 + a0/(2*√3)))
+    # A(r, B) = [-B[3]/ħoec, 0, 0] * piecewise(r[2])
+    # eφ(r, dr, B) = diagphi(dot(A(r, B), dr))
+    # peierls! =@hopping!((t, r, dr) -> t * eφ(r, dr, B))
+
     diagphi(φ) = Diagonal(SA[cis(φ), cis(φ), cis(-φ), cis(-φ)])
-    piecewise(y) = clamp(y, -W/2, W/2) # clamp(x, -Ln/2 - a0/(2*√3) , Ln/2 + a0/(2*√3)))
-    A(r, B) = [-B[3]/ħoec, 0, 0] * piecewise(r[2])
+    piecewise(x) =  clamp(x, -Ln+Ls, Ln-Ls)
+    A(r, B) = [0, B[3]/ħoec, 0] * piecewise(r[1])
     eφ(r, dr, B) = diagphi(dot(A(r, B), dr))
     peierls! =@hopping!((t, r, dr) -> t * eφ(r, dr, B))
+
+
+
+
+
 
     # LOCAL SELF-ENERGY MODEL
     xmin, xmax = extrema(r->r[1], sitepositions(Quantica.combine(lat_top, lat_bot)))
@@ -25,8 +37,12 @@ function rectangle_weaklink(p, selfy = true, hole = false; Δx_mask = 0, Δy_mas
         !(xmin+Ls <= r[1] <= xmax - Ls) || !(ymin+Ws <= r[2] <= ymax - Ws))
 
     sCself! = @onsite!((o, r; ϕ) -> o + self_region(r) * Δ *
-        eφ(r, r+[0,0,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
+        eφ(r, r+ifelse(sign(r[1]<0, [-Ln+Ls,-W/2,0], [Ln-Ls,-W/2,0]), B) *
+        diagphi(sign(r[1])* ϕ/4) * σyτy * 
             diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
+        # eφ(r, r+ifelse(sign(r[1][0,0,0], B) * diagphi(sign(r[1])* ϕ/4) * σyτy *
+        #     diagphi(sign(r[1])*ϕ/4)' * eφ(r, r+[0,0,0], B)')
+
 
     # HAMILTONIAN BUILD
     h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> 
@@ -56,7 +72,7 @@ end
 
 "flux test"
 function quantumflux(p)
-    (; Ls, Δ, Ws, B, Ln, W) = p
-    println("Set Bz to: ",Φ0/(Ln*W))
-    return Φ0/(Ln*W)
+    Φ0 = 2067.8338 # T*nm^2    
+    println("Set Bz to: ",Φ0/(p.Ln*p.W))
+    return Φ0/(p.Ln*p.W)
 end
