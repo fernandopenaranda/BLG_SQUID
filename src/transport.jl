@@ -30,7 +30,7 @@ function icϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
     I = zeros(Float64, length(Δϕlist), length(Bperplist))
     [I[:, i] = supercurrent_exactdiag(collect(Δϕlist), 
         reconstruct(p, B = SA[0,0,Bperplist[i]]); kw...) for i in 1:length(Bperplist)]
-    return maximum(abs.(I)) 
+    return [maximum(abs.(I[:,i])) for i in 1:length(Bperplist)]
 end
 
 """
