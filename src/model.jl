@@ -1,5 +1,6 @@
 const ħoec = ustrip(u"T*nm^2",ħ/e)
 const μB = ustrip(u"T^-1*meV",μ_B)
+const Φ0 = ustrip(u"T*nm^2", h/(2e))
 const σ0τz = @SMatrix[1 0 0 0; 0 1 0 0; 0 0 -1 0; 0 0 0 -1]
 const σ0τ0 = @SMatrix[1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1]
 const σzτ0 = @SMatrix[1 0 0 0; 0 -1 0 0; 0 0 1 0; 0 0 0 -1]
