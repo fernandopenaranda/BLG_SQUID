@@ -24,12 +24,13 @@ end
     `icϕ_exactdiag(Bperplist::Array{T,1}, p, Δϕ::Union{Array{T,1}, Missing}; kw...)`
 supercurrent sweep with both Bperp and Δϕ. See: `supercurrent_exactdiag()`
 """
-function icϕ_exactdiag(Bperplist::Array{T,1}, p, Δϕlist; kw...) where {T}
-    # Δϕlist = ifelse(isa(Δϕ, Missing) == true, -0.5:1:π+0.5, Δϕ)
+function icϕ_exactdiag(Bperplist::Array{T,1}, p; kw...) where {T}
+    # Δϕlist = ifelse(isa(Δϕ, Missing) == true, -0.5:.5:π+0.5, Δϕ)
+    Δϕlist = collect(-0.5:.5:π+0.5)
     I = zeros(Float64, length(Δϕlist), length(Bperplist))
     [I[:, i] = supercurrent_exactdiag(collect(Δϕlist), 
         reconstruct(p, B = SA[0,0,Bperplist[i]]); kw...) for i in 1:length(Bperplist)]
-    return I 
+    return maximum(abs.(I)) 
 end
 
 """
@@ -65,8 +66,11 @@ subspace is specified, we can always substract this contribution for the full KP
 contribution. 
     `method = :free_energy`
 """
-supercurrent_exactdiag(Δϕlist, p = Params()::Params; kw...) = 
-    supercurrent_exactdiag(Δϕlist, rectangle_weaklink(p, false); kw...)
+
+
+
+supercurrent_exactdiag(Δϕlist, p = Params()::Params; mask = true, Δx_mask = 20, Δy_mask = 20, kw...) = 
+    supercurrent_exactdiag(Δϕlist, rectangle_weaklink(p, false, mask, Δx_mask = Δx_mask, Δy_mask = Δy_mask); kw...)
 
 function supercurrent_exactdiag(Δϕlist, hpar::Quantica.ParametricHamiltonian; kw...)
     f = SharedArray(zeros(Float64, length(Δϕlist)))

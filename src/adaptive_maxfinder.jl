@@ -138,20 +138,20 @@ fourier_model(x, p) = sum(i ->
 @. cos_model(x, p) = p[1]*cos(x/2+p[3])
 @. triang(x, p) = p[1]*sawtoothwave(x+p[2])
 
-using CairoMakie
-function cpr_plot(phase, I, model, fitted_params)
-    fig = Figure(resolution = (600,400), font = "CMU Serif") 
-    ax = Axis(fig, xlabel = "phi (pi)", ylabel = "I(phi)", ylabelsize = 22, 
-        xlabelsize= 22, xgridstyle=:dash, ygridstyle=:dash, xtickalign = 1, 
-        xticksize=10, ytickalign=1, yticksize=10,  xlabelpadding = -10)
-    phase_range = range(minimum(phase), stop = maximum(phase), length = 100)
-    I_range = model(phase_range, fitted_params)
-    scatter!(ax, phase, I, color = :red, markersize = 5)
-    lines!(ax,  phase_range, I_range, color = :black)
-    fig[1,1] = ax
-    #save("filename.png", fig, px_per_unit = 2.0) 
-    display(fig)
-end
+# using CairoMakie
+# function cpr_plot(phase, I, model, fitted_params)
+#     fig = Figure(resolution = (600,400), font = "CMU Serif") 
+#     ax = Axis(fig, xlabel = "phi (pi)", ylabel = "I(phi)", ylabelsize = 22, 
+#         xlabelsize= 22, xgridstyle=:dash, ygridstyle=:dash, xtickalign = 1, 
+#         xticksize=10, ytickalign=1, yticksize=10,  xlabelpadding = -10)
+#     phase_range = range(minimum(phase), stop = maximum(phase), length = 100)
+#     I_range = model(phase_range, fitted_params)
+#     scatter!(ax, phase, I, color = :red, markersize = 5)
+#     lines!(ax,  phase_range, I_range, color = :black)
+#     fig[1,1] = ax
+#     #save("filename.png", fig, px_per_unit = 2.0) 
+#     display(fig)
+# end
 
 
 ## Usage
