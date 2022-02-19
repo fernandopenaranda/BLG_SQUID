@@ -1,5 +1,5 @@
 using Distributed 
-addprocs(2)
+addprocs(1)
 @everywhere using BLG_SQUID
 # using MKL
 # BLAS.set_num_threads(2)

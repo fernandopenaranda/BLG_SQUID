@@ -4,13 +4,8 @@ module BLG_SQUID
 
     using Requires
 
-    function __init__()
-        @require CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0" begin       
-        @require  VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a" begin 
-        end
-        end
-    end
-
+ 
+    using CairoMakie, VegaLite 
     using SharedArrays, Distributed
     using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
     using Baselet, Arpack, CSV, DataFrames, Dates
@@ -23,6 +18,9 @@ module BLG_SQUID
         rectangle_randombounds_sc, ldosonlattice_averaged_sc, ldosonlattice
     export icϕ_exactdiag, fraunhofer_abs_exact, maxicϕ_exactdiag, fraunhofer_abs_exact_adaptive
 
+    export Params_eff_quad, supercurrent_ef, supercurrent2_1dchains, spectrumvsphase_ef,
+        fraunhofer_eff, plotfraunhof_vs_phase 
+
     include("model.jl")
     include("nanoribbon.jl")
     include("bounded_sys.jl")
@@ -32,5 +30,6 @@ module BLG_SQUID
     include("save.jl")
     include("adaptive_maxfinder.jl")
     include("transport.jl")
+    include("effective_model.jl")
 
 end
